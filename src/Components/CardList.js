@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import Card from "./Card";
+import Card from "../Components/Card";
 
 const CardList = ({ robots }) => {
   const robotsArray = robots.map((robot, i) => {
