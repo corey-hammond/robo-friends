@@ -1,14 +1,24 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { createStore } from "redux";
+import { createStore, applyMiddleware, compose, combineReducers } from "redux";
+import { createLogger } from "redux-logger";
+import thunk from "redux-thunk";
 import "./index.css";
 import App from "./Containers/App";
 import * as serviceWorker from "./serviceWorker";
 import "tachyons";
-import { searchRobots } from "./reducers";
+import { searchRobots, requestRobots } from "./reducers";
 
-const store = createStore(searchRobots);
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const logger = createLogger();
+
+const rootReducer = combineReducers({ searchRobots, requestRobots });
+
+const store = createStore(
+  rootReducer,
+  composeEnhancers(applyMiddleware(thunk, logger))
+);
 
 ReactDOM.render(
   <React.StrictMode>

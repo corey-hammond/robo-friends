@@ -6,24 +6,20 @@ import Scroll from "../Components/Scroll";
 import ErrorBoundary from "../Components/ErrorBoundary";
 import "./App.css";
 
-import { setSearchField } from "../actions";
+import { setSearchField, requestRobots } from "../actions";
 
 function App(props) {
-  const [robots, setRobots] = useState([]);
-
   useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then((res) => res.json())
-      .then((users) => setRobots(users));
+    props.onRequestRobots();
   }, []);
 
-  const { searchField, onSearchChange } = props;
+  const { searchField, onSearchChange, robots, isPending } = props;
 
   const filteredRobots = robots.filter((robot) => {
     return robot.name.toLowerCase().includes(searchField.toLowerCase());
   });
 
-  return !robots.length ? (
+  return isPending ? (
     <h1>Loading...</h1>
   ) : (
     <div className="tc">
@@ -39,11 +35,15 @@ function App(props) {
 }
 
 const mapStateToProps = (state) => ({
-  searchField: state.searchField,
+  searchField: state.searchRobots.searchField,
+  robots: state.requestRobots.robots,
+  isPending: state.requestRobots.isPending,
+  error: state.requestRobots.error,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onSearchChange: (event) => dispatch(setSearchField(event.target.value)),
+  onRequestRobots: () => dispatch(requestRobots()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
